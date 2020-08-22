@@ -24,7 +24,26 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+const requestIp = require('request-ip')
 
+
+var ipMiddleware = function(req, res, next) {
+const clientIp = requestIp.getClientIp(req);
+next();
+}
+    
+app.use(requestIp.mw())
+
+app.get('/api/whoami', (req, res) => {
+var ipadress = req.clientIp
+var language = req.acceptsLanguages()
+var software=req.get('User-Agent')
+ res.json({
+ ipadress: ipadress,
+ language:language[0],
+ software:software
+ })
+})
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
